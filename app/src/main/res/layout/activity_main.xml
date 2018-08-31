@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/txtView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đoạn Text Voice sẽ hiển thị ở đây"
+        android:padding="10dp"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnClick"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/btnSelect"
+        android:text="Click để gửi"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSelect"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/txtView"
+        android:text="Select File Mp3"
+        android:layout_centerHorizontal="true"/>
+
+
+
+
+
+</RelativeLayout>
