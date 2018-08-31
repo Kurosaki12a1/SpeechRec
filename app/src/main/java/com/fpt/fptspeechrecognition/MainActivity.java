@@ -152,8 +152,25 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(SpeechAPI speechAPI) {
-                            if (speechAPI.getStatus() == 0)
-                                textVoice = speechAPI.getHypotheses().get(0).getUtterance();
+                            switch (speechAPI.getStatus()){
+                                case 0:
+                                    txtView.setText("Đang xử lý....");
+                                    textVoice = speechAPI.getHypotheses().get(0).getUtterance();
+                                    break;
+                                case 1:
+                                    textVoice= "Không có âm thanh";
+                                    break;
+                                case 2:
+                                    textVoice= "Bị Hủy";
+                                    break;
+                                case 9:
+                                    textVoice="Hệ thống bận";
+                                    break;
+                                case 5:
+                                    textVoice="Hệ thống bận , xin vui lòng thử lại";
+                                    break;
+
+                            }
 
                         }
 
