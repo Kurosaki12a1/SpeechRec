@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.fpt.GSON.SpeechAPI;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
@@ -47,11 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
     private String APIKey= "7d992a2996b54c14b0d1503d49c7ed45";
 
-    private static String url="https://api.openfpt.vn/";
+    private static String URL="https://api.openfpt.vn/";
 
-    private int codeSuccesful=1;
-
-    private String pathVoice="";
+    private int codeSuccessful = 1;
 
     private String textVoice="";
 
@@ -67,11 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     MultipartBody.Part body;
 
-    private static Gson gsonRetrofit = new GsonBuilder()
-//            .excludeFieldsWithoutExposeAnnotation()
-            .disableHtmlEscaping()
-            .setLenient()
-            .create();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         int MyVersion = Build.VERSION.SDK_INT;
         if (MyVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            if (!checkIfAlreadyhavePermission()) {
+            if (!checkPermissionApp()) {
                 requestForSpecificPermission();
             }
         }
@@ -97,13 +89,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkIfAlreadyhavePermission() {
+    private boolean checkPermissionApp() {
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS);
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 101:
                 break;
@@ -116,10 +108,11 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.GET_ACCOUNTS, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
     }
 
+
     public static Retrofit getRetrofit(){
         if(retrofit==null){
             Retrofit.Builder builder=new Retrofit.Builder()
-                    .baseUrl(url)
+                    .baseUrl(URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
 
@@ -198,18 +191,25 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("audio/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Please select your record"), codeSuccesful);
+        startActivityForResult(Intent.createChooser(intent, "Please select your record"), codeSuccessful);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == codeSuccesful && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == codeSuccessful && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            // get URI from data choose
             fileUriRecord=data.getData();
+
+            //get File from exactly Path
             fileRecord=new File(getRealPathFromURI(fileUriRecord));
+
+            //get RequestBody then convert to multipart
             RequestBody reqFile=RequestBody.create(MediaType.parse("multipart/form-data"),fileRecord);
+
             body=MultipartBody.Part.createFormData("audio",fileRecord.getName(),reqFile);
+
         }
     }
 
